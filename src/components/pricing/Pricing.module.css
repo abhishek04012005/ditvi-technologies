@@ -1,0 +1,453 @@
+.section {
+    padding: 6rem 1.5rem;
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.05), rgba(var(--accent-rgb), 0.05));
+    border-radius: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.section h2 {
+    text-align: center;
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-weight: 800;
+    background: var(--text-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 2rem;
+}
+
+
+.paymentToggle {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.toggleSwitch {
+    padding: 0.5rem;
+    border-radius: 2rem;
+}
+
+.toggleLabels {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.toggleLabels span {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.toggleLabels span.active {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.switchTrack {
+    width: 50px;
+    height: 26px;
+    background: rgba(var(--primary-rgb), 0.15);
+    border-radius: 13px;
+    padding: 2px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.switchThumb {
+    width: 22px;
+    height: 22px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover effects */
+.switchTrack:hover {
+    background: rgba(var(--primary-rgb), 0.2);
+}
+
+.switchTrack:hover .switchThumb {
+    box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.3);
+}
+
+@media (max-width: 768px) {
+    .toggleLabels {
+        gap: 0.75rem;
+    }
+
+    .toggleLabels span {
+        font-size: 0.875rem;
+    }
+
+    .switchTrack {
+        width: 46px;
+        height: 24px;
+    }
+
+    .switchThumb {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.packagesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.packageCard {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s ease;
+}
+
+.packageCard.popular {
+    border: 2px solid var(--primary-color);
+    transform: scale(1.02);
+}
+
+.popularTag {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    position: absolute;
+    top: 0;
+    right: 2rem;
+    border-radius: 0 0 0.75rem 0.75rem;
+    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+}
+
+.packageHeader {
+    text-align: center;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
+    margin-bottom: 2rem;
+}
+
+.packageIcon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.1), rgba(var(--accent-rgb), 0.1));
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    margin: 0 auto 1.5rem;
+}
+
+.packageHeader h3 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.pricing {
+    margin-top: 1.5rem;
+}
+
+.price {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.paymentType {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.packageContent {
+    margin-bottom: 2rem;
+}
+
+.installments {
+    margin-bottom: 2rem;
+}
+
+.installments h4 {
+    font-size: 1.125rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.installmentsList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.installmentItem {
+    padding: 1rem;
+    background: rgba(var(--primary-rgb), 0.05);
+    border-radius: 0.75rem;
+}
+
+.installmentHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.badge {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.milestone {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.installmentDesc {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+
+.checkIcon {
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+}
+
+.packageFooter {
+    margin-top: auto;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(var(--primary-rgb), 0.1);
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.tag {
+    background: rgba(var(--primary-rgb), 0.1);
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.packageButton {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.125rem;
+    border-radius: 0.75rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.packageButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+}
+
+@media (max-width: 1024px) {
+    .packagesGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .packageCard.popular {
+        transform: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .section {
+        padding: 4rem 1rem;
+        margin: 2rem 0;
+    }
+
+    .packagesGrid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        margin: 2rem auto;
+    }
+
+    /* .paymentToggle {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .toggleBtn {
+        width: 100%;
+        max-width: 200px;
+    } */
+
+    .toggleTrack {
+        width: 160px;
+    }
+
+    .price {
+        font-size: 2.5rem;
+    }
+
+    .packageIcon {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+
+
+}
+
+@media (max-width: 480px) {
+    .section {
+        padding: 3rem 1rem;
+    }
+
+    .packageCard {
+        padding: 1.5rem;
+    }
+
+    .popularTag {
+        right: 1rem;
+    }
+}
+
+.features {
+  padding: 1.5rem 0;
+}
+
+.features h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.featuresList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.featureItem {
+  background: rgba(var(--primary-rgb), 0.03);
+  border-radius: 1rem;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.featureItem:hover {
+  background: rgba(var(--primary-rgb), 0.05);
+}
+
+.featureHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.featureIcon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--primary-rgb), 0.1);
+  border-radius: 8px;
+  color: var(--primary-color);
+  font-size: 1.125rem;
+}
+
+.featureTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.subFeatures {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-left: 2.5rem;
+}
+
+.subFeatureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.subFeatureItem .checkIcon {
+  color: var(--primary-color);
+  font-size: 1.125rem;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 768px) {
+  .features {
+    padding: 1rem 0;
+  }
+
+  .featureItem {
+    padding: 1rem;
+  }
+
+  .featureHeader {
+    margin-bottom: 0.75rem;
+  }
+
+  .featureIcon {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
+  }
+
+  .featureTitle {
+    font-size: 1rem;
+  }
+
+  .subFeatures {
+    margin-left: 2rem;
+  }
+
+  .subFeatureItem {
+    font-size: 0.875rem;
+  }
+}
