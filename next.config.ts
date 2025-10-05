@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // ...existing config
-    generateStaticParams: true,
-    siteMap: {
-        hostname: 'https://abhishek04012005.github.io/ditvi-technologies',
+    output: 'export',
+    basePath: process.env.NODE_ENV === 'production' ? '/ditvi-technologies' : '',
+    images: {
+        unoptimized: true
     },
+    trailingSlash: true,
 }
 
 module.exports = nextConfig

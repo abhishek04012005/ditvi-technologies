@@ -1,8 +1,13 @@
 import { MetadataRoute } from 'next'
 import { services } from '@/json/services'
 
+// Add these export configurations for static generation
+export const dynamic = 'force-static'
+export const dynamicParams = false
+export const revalidate = false
+
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://abhishek04012005.github.io/ditvi-technologies' 
+    const baseUrl = 'https://abhishek04012005.github.io/ditvi-technologies'
 
     // Core pages
     const routes = [
@@ -25,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.8,
     }))
 
-    // External redirects (for reference/SEO)
+    // External redirects
     const externalRoutes = [
         {
             url: 'https://biodata.ditvi.org',
