@@ -1,4 +1,4 @@
-import Celebration from '@/components/service/Celebration/Celebration'
+import Celebration from "@/components/service/Celebration/Celebration"
 
 export const metadata = {
   title: 'Digital Celebrations | Ditvi Technologies',
