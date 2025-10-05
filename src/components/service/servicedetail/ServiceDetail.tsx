@@ -32,6 +32,7 @@ const ServiceDetail: FC<ServiceDetailProps> = ({ params }) => {
     },
     [slugPath]
   )
+  //e
   if (!service) {
     return (
       <section className={styles.notFound}>
