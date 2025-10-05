@@ -24,7 +24,7 @@ const ServiceDetail: FC<ServiceDetailProps> = ({ params }) => {
 
     const service = useMemo<ServiceItem | undefined>(
     () => {
-      const excludedIds = [2, 3] // IDs to exclude
+      const excludedIds = [2, 6] 
       const service = services.find((s) => 
         s.path === slugPath && !excludedIds.includes(s.id)
       )
