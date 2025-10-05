@@ -20,7 +20,7 @@ export const socialLinks: SocialLink[] = [
 ];
 
 export const contactDetails: ContactDetails = {
-  email: 'contact@ditvi.org',
+  email: 'care@ditvi.org',
   number: '+91 9263767441',
   address: 'Ramjaipal Road, Opp. Gola Road, Near Hotel Magadh Palace, Patna-801503'
 };

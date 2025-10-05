@@ -4,6 +4,7 @@ import ServImage3 from "../assets/celebration/birthday.jpg";
 import ServImage4 from "../assets/celebration/wedding.jpg";
 import ServImage5 from "../assets/celebration/anniversary.jpg"
 import ServImage6 from "../assets/services/serv3.jpg"
+import ServImage7 from "../assets/services/signature.jpg"
 import type { StaticImageData } from "next/image";
 
 export interface PricingFeature {
@@ -1127,7 +1128,7 @@ export const services: ServiceItem[] = [
         id: 6,
         title: "Ditvi Signature",
         subtitle: "Boost Your Local Visibility & Reputation",
-        startingPrice: "Starts from ₹11,999",
+        startingPrice: "Starts from ₹101",
         description: "Leave a lasting digital signature with enhanced local SEO strategies, reputation management, and optimized online listings that drive visibility and trust.",
         descriptionContent: "Ditvi Technologies specializes in simplifying the digital journey for businesses. We deliver tailored, user-friendly solutions to establish and elevate your online presence. From professional websites and strategic SEO to engaging social media and digital automation, we ensure every aspect is optimized. Our goal is to make advanced digital capabilities accessible, driving discoverability and fostering strong connections. Partner with us to achieve sustainable online growth and measurable success.",
         detailedDescription: [
@@ -1321,15 +1322,210 @@ export const services: ServiceItem[] = [
                 ]
             }
         ],
-        image: ServImage6,
-        path: "/services/seo",
+        image: ServImage7,
+        path: "/services/signatures",
         stats: {
             clients: 100,
             projects: 140,
             satisfaction: 96
         }
+    },
+    {
+        id: 7,
+        title: "Ditvi Biodata",
+        subtitle: "Craft Your Story, Digitally & Elegantly",
+        startingPrice: "Starts from ₹101",
+        description: "Present your personal or family biodata with elegance and clarity through custom-designed digital profiles, visual storytelling, and shareable formats that leave a lasting impression.",
+        descriptionContent: "Ditvi Biodata transforms traditional matchmaking and family introductions into modern, beautifully designed digital experiences. From personalized biodata websites and visual profiles to printable PDFs and social media‑ready formats, we help individuals and families showcase their story with style, clarity, and confidence. Our goal is to make biodata presentation more engaging, accessible, and memorable.",
+        detailedDescription: [
+            "In today’s digital age, first impressions often begin online.",
+            "Ditvi Biodata helps individuals and families present their story with elegance and clarity.",
+            "From custom biodata websites to printable profiles, every detail is thoughtfully designed.",
+            "Share your journey with confidence through visual storytelling and digital formats."
+        ],
+        challenges: [
+            {
+                icon: "📄",
+                title: "Outdated Biodata Formats",
+                description: "Traditional PDFs lack visual appeal and personalization"
+            },
+            {
+                icon: "📵",
+                title: "Limited Shareability",
+                description: "Difficult to share across platforms like WhatsApp or Instagram"
+            },
+            {
+                icon: "📉",
+                title: "Low Engagement",
+                description: "Biodatas often fail to capture attention or spark interest"
+            },
+            {
+                icon: "📷",
+                title: "Poor Visual Presentation",
+                description: "Unclear layout, mismatched fonts, or low-quality images"
+            }
+        ],
+        offerings: [
+            {
+                icon: "🖼️",
+                title: "Digital Biodata Design",
+                description: "Elegant, personalized biodata layouts",
+                benefits: [
+                    "Custom fonts & colors",
+                    "Profile photo integration",
+                    "Family & background sections",
+                    "PDF & web formats"
+                ]
+            },
+            {
+                icon: "🌐",
+                title: "Biodata Website",
+                description: "Shareable biodata microsite with secure access",
+                benefits: [
+                    "Mobile-friendly design",
+                    "Private link sharing",
+                    "Photo gallery",
+                    "Contact form or CTA"
+                ]
+            },
+            {
+                icon: "📲",
+                title: "Social Media Biodata Pack",
+                description: "Optimized visuals for WhatsApp, Instagram & Facebook",
+                benefits: [
+                    "Story templates",
+                    "Profile banners",
+                    "Intro reels (optional)",
+                    "Platform-specific sizing"
+                ]
+            },
+            {
+                icon: "🎨",
+                title: "Visual Branding",
+                description: "Make your biodata stand out",
+                benefits: [
+                    "Custom logo or monogram",
+                    "Color palette selection",
+                    "Typography styling",
+                    "Cover image design"
+                ]
+            }
+        ],
+        pricing: [
+            {
+                name: "Starter",
+                oneTimePrice: 4999,
+                partPaymentPrice: 5499,
+                recommendedFor: ["Individuals", "Simple family introductions", "Traditional matchmaking"],
+                installments: {
+                    first: { percentage: 60, description: "Digital Biodata Design & PDF Delivery" },
+                    second: { percentage: 40, description: "Social Media Pack & Final Touches" },
+                    third: { percentage: 20, description: "Final Optimization & Support" }
+                },
+                features: [
+                    {
+                        icon: "📄",
+                        title: "Digital Biodata",
+                        items: [
+                            "Custom PDF Design",
+                            "Profile Photo Integration",
+                            "Basic Family Details",
+                            "WhatsApp Shareable Format"
+                        ]
+                    }
+                ],
+                highlights: [
+                    "Elegant presentation",
+                    "Easy to share",
+                    "2 revisions included"
+                ]
+            },
+            {
+                name: "Pro",
+                oneTimePrice: 8999,
+                partPaymentPrice: 9499,
+                recommendedFor: ["Families", "Premium matchmaking", "Social media sharing"],
+                installments: {
+                    first: { percentage: 50, description: "Biodata Design & Website Setup" },
+                    second: { percentage: 30, description: "Social Media Pack & Branding" },
+                    third: { percentage: 20, description: "Final Delivery & Support" }
+                },
+                features: [
+                    {
+                        icon: "📄",
+                        title: "Digital Biodata",
+                        items: [
+                            "Custom PDF & Website",
+                            "Extended Family Details",
+                            "Photo Gallery",
+                            "Contact CTA"
+                        ]
+                    },
+                    {
+                        icon: "📲",
+                        title: "Social Media Pack",
+                        items: [
+                            "Instagram Story Templates",
+                            "Facebook Cover",
+                            "WhatsApp Intro Card",
+                            "Profile Banner"
+                        ]
+                    }
+                ],
+                highlights: [
+                    "Shareable across platforms",
+                    "Branded presentation",
+                    "4 revisions included"
+                ],
+                popular: true
+            },
+            {
+                name: "Elite",
+                oneTimePrice: 14999,
+                partPaymentPrice: 15999,
+                recommendedFor: ["High-profile families", "Luxury matchmaking", "Event-ready biodatas"],
+                installments: {
+                    first: { percentage: 40, description: "Full Audit & Strategy" },
+                    second: { percentage: 40, description: "Execution & Branding" },
+                    third: { percentage: 20, description: "Final Delivery & Hosting Support" }
+                },
+                features: [
+                    {
+                        icon: "📄",
+                        title: "Digital Biodata",
+                        items: [
+                            "Custom PDF & Website",
+                            "Extended Family Tree",
+                            "Photo & Video Gallery",
+                            "Private Hosting"
+                        ]
+                    },
+                    {
+                        icon: "🎨",
+                        title: "Visual Branding",
+                        items: [
+                            "Custom Monogram",
+                            "Color Palette & Typography",
+                            "Cover Image Design",
+                            "Print-Ready Assets"
+                        ]
+                    }
+                ],
+                highlights: [
+                    "Luxury presentation",
+                    "Private hosting",
+                    "6 revisions + 3 months support"
+                ]
+            }
+        ],
+        image: ServImage6,
+        path: "/services/ditvi-biodata",
+        stats: {
+            clients: 80,
+            projects: 120,
+            satisfaction: 98
+        }
     }
-
 ];
 
 

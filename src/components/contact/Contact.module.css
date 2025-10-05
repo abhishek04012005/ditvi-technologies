@@ -173,3 +173,23 @@
 .errorInput {
   border-color: #ff4444 !important;
 }
+
+.statusMessage {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+.statusMessage.success {
+    background-color: rgba(0, 200, 83, 0.1);
+    color: #00c853;
+    border: 1px solid rgba(0, 200, 83, 0.2);
+}
+
+.statusMessage.error {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.2);
+}

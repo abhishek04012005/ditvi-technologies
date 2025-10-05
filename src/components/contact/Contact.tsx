@@ -1,5 +1,7 @@
 'use client'
 import { useState } from 'react'
+import { Formik, Form, Field, FormikHelpers } from 'formik'
+import * as Yup from 'yup'
 import { motion } from 'framer-motion'
 import { FiMail, FiPhone, FiMapPin } from 'react-icons/fi'
 import styles from './Contact.module.css'
@@ -28,96 +30,72 @@ const contactInfo = [
     }
 ]
 
+interface ContactFormValues {
+    name: string
+    number: string
+    subject: string
+    message: string
+}
+
+const initialValues: ContactFormValues = {
+    name: '',
+    number: '',
+    subject: '',
+    message: ''
+}
+
+const validationSchema = Yup.object({
+    name: Yup.string()
+        .matches(/^[A-Za-z\s]+$/, 'Please enter alphabets only')
+        .required('Name is required'),
+    number: Yup.string()
+        .matches(/^[6-9]\d{9}$/, 'Enter valid 10-digit number starting with 6-9')
+        .required('Phone number is required'),
+    subject: Yup.string()
+        .required('Subject is required'),
+    message: Yup.string()
+        .required('Message is required')
+})
+
 const Contact = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        number: '',
-        subject: '',
-        message: ''
-    })
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    // Add validation state
-    const [errors, setErrors] = useState({
-        name: '',
-        number: ''
-    })
+    const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+    const [submitMessage, setSubmitMessage] = useState('')
 
-    // Update handleChange function
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target
-
-        // Validation for name field - only alphabets and spaces
-        if (name === 'name') {
-            if (!/^[A-Za-z\s]*$/.test(value)) {
-                setErrors(prev => ({
-                    ...prev,
-                    name: 'Please enter alphabets only'
-                }))
-                return
-            } else {
-                setErrors(prev => ({
-                    ...prev,
-                    name: ''
-                }))
-            }
-        }
-
-        // Validation for phone number
-        if (name === 'number') {
-            // Check if starts with valid digits and has correct length
-            if (!/^[6-9]\d{0,9}$/.test(value)) {
-                setErrors(prev => ({
-                    ...prev,
-                    number: 'Enter valid 10-digit number starting with 6-9'
-                }))
-                // Allow input only if it's empty or matches pattern
-                if (value && !/^[6-9]\d*$/.test(value)) {
-                    return
-                }
-            } else {
-                setErrors(prev => ({
-                    ...prev,
-                    number: ''
-                }))
-            }
-        }
-
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }))
-    }
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsSubmitting(true)
-
+    const handleSubmit = async (
+        values: ContactFormValues,
+        { resetForm }: FormikHelpers<ContactFormValues>
+    ) => {
         try {
-            const { error } = await supabase
-                .from('contacts')
-                .insert([
-                    {
-                        name: formData.name,
-                        number: formData.number,
-                        subject: formData.subject,
-                        message: formData.message,
-                        status: 'new'
-                    }
-                ])
+            const { error } = await supabase.from('contacts').insert([
+                {
+                    name: values.name.trim(),
+                    number: values.number.trim(),
+                    subject: values.subject.trim(),
+                    message: values.message.trim(),
+                    status: 'new',
+                    created_at: new Date().toISOString()
+                }
+            ])
 
             if (error) throw error
 
-            // Reset form
-            setFormData({ name: '', number: '', subject: '', message: '' })
-            // Show success message (implement your own notification system)
+            // Success handling
+            setSubmitStatus('success')
+            setSubmitMessage('Thank you for your message! We will get back to you soon.')
+            resetForm()
+
+            // Reset success message after 5 seconds
+            setTimeout(() => {
+                setSubmitStatus('idle')
+                setSubmitMessage('')
+            }, 5000)
+
         } catch (error) {
             console.error('Error submitting form:', error)
-            // Show error message
-        } finally {
-            setIsSubmitting(false)
+            setSubmitStatus('error')
+            setSubmitMessage('Something went wrong. Please try again later.')
         }
     }
-
 
     return (
         <section className={styles.contact}>
@@ -126,7 +104,7 @@ const Contact = () => {
                     title='Get in Touch'
                     subtitle='Let&apos;s Connect'
                     titleHighlight='Together'
-                ></Heading>
+                />
 
                 <div className={styles.content}>
                     <motion.div
@@ -151,71 +129,85 @@ const Contact = () => {
                             </a>
                         ))}
                     </motion.div>
-
-                    <motion.form
-                        initial={{ opacity: 0, x: 20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.6, delay: 0.3 }}
+                    <Formik
+                        initialValues={initialValues}
+                        validationSchema={validationSchema}
                         onSubmit={handleSubmit}
-                        className={styles.form}
                     >
-                        <div className={styles.formGroup}>
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder="Your Name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                                pattern="[A-Za-z\s]+"
-                                title="Please enter alphabets only"
-                            />
-                            {errors.name && <span className={styles.errorText}>{errors.name}</span>}
-                        </div>
-                        <div className={styles.formGroup}>
-                            <input
-                                type="tel"
-                                name="number"
-                                placeholder="Your Number"
-                                value={formData.number}
-                                onChange={handleChange}
-                                required
-                                pattern="[6-9][0-9]{9}"
-                                maxLength={10}
-                                title="Please enter a valid 10-digit number starting with 6-9"
-                            />
-                            {errors.number && <span className={styles.errorText}>{errors.number}</span>}
-                        </div>
-                        <div className={styles.formGroup}>
-                            <input
-                                type="text"
-                                name="subject"
-                                placeholder="Subject"
-                                value={formData.subject}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <textarea
-                                name="message"
-                                placeholder="Your Message"
-                                value={formData.message}
-                                onChange={handleChange}
-                                required
-                                rows={5}
-                            />
-                        </div>
-                        <button
-                            type="submit"
-                            className={styles.submitButton}
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? 'Sending...' : 'Send Message'}
-                        </button>
-                    </motion.form>
+                        {({ isSubmitting, errors, touched }) => (
+                            <Form className={styles.form}>
+                                <div className={styles.formGroup}>
+                                    <Field
+                                        type="text"
+                                        name="name"
+                                        placeholder="Your Name"
+                                        className={errors.name && touched.name ? styles.errorInput : ''}
+                                    />
+                                    {errors.name && touched.name && (
+                                        <span className={styles.errorText}>{errors.name}</span>
+                                    )}
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                    <Field
+                                        type="tel"
+                                        name="number"
+                                        placeholder="Your Number"
+                                        maxLength={10}
+                                        className={errors.number && touched.number ? styles.errorInput : ''}
+                                    />
+                                    {errors.number && touched.number && (
+                                        <span className={styles.errorText}>{errors.number}</span>
+                                    )}
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                    <Field
+                                        type="text"
+                                        name="subject"
+                                        placeholder="Subject"
+                                        className={errors.subject && touched.subject ? styles.errorInput : ''}
+                                    />
+                                    {errors.subject && touched.subject && (
+                                        <span className={styles.errorText}>{errors.subject}</span>
+                                    )}
+                                </div>
+
+                                <div className={styles.formGroup}>
+                                    <Field
+                                        as="textarea"
+                                        name="message"
+                                        placeholder="Your Message"
+                                        rows={5}
+                                        className={errors.message && touched.message ? styles.errorInput : ''}
+                                    />
+                                    {errors.message && touched.message && (
+                                        <span className={styles.errorText}>{errors.message}</span>
+                                    )}
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className={styles.submitButton}
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                                </button>
+                            </Form>
+                        )}
+                    </Formik>
                 </div>
             </div>
+
+            {submitMessage && (
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`${styles.statusMessage} ${styles[submitStatus]}`}
+                >
+                    {submitMessage}
+                </motion.div>
+            )}
         </section>
     )
 }

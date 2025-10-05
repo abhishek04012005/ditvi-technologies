@@ -29,19 +29,18 @@ const ContactDashboard = () => {
     const fetchContacts = async () => {
         try {
             const { data, error } = await supabase
-                .from('contacts')
-                .select('*')
-                .order('created_at', { ascending: false })
+                .from("contacts")
+                .select("*")
+                .order("created_at", { ascending: false });
 
-            if (error) throw error
-
-            setContacts(data || [])
+            if (error) throw error;
+            setContacts(data || []);
+            setLoading(false);
         } catch (error) {
-            console.error('Error fetching contacts:', error)
-        } finally {
-            setLoading(false)
+            console.error("Error fetching contacts:", error);
+            setLoading(false);
         }
-    }
+    };
 
     const updateContactStatus = async (id: string, status: 'new' | 'read' | 'archived') => {
         try {

@@ -1,5 +1,6 @@
 'use client'
-import { useEffect, useState } from 'react'
+
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
     FiMail, FiPhone, FiMessageSquare, FiCheck, FiX,
@@ -8,73 +9,128 @@ import {
 import { supabase } from '@/lib/supabase'
 import styles from './Dashboard.module.css'
 
-interface Contact {
+// Types
+interface BaseItem {
     id: string
+    created_at: string
+    status: string
     name: string
+}
+
+interface Contact extends BaseItem {
+    type: 'contact'
     number: string
     subject: string
     message: string
-    status: 'new' | 'read' | 'archived'
-    created_at: string
-    type: 'contact'
+    status: ContactStatus
 }
 
-interface Enquiry {
-    id: string
-    name: string
+interface Enquiry extends BaseItem {
+    type: 'enquiry'
     phone: string
     service: string
-    status: 'pending' | 'contacted' | 'completed' | 'archived'
-    created_at: string
-    type: 'enquiry'
+    status: EnquiryStatus
 }
 
+type ContactStatus = 'new' | 'read' | 'archived'
+type EnquiryStatus = 'pending' | 'contacted' | 'completed' | 'archived'
 type DashboardItem = Contact | Enquiry
 type ViewType = 'all' | 'contacts' | 'enquiries'
-type StatusFilter = 'all' | 'new' | 'read' | 'archived' | 'pending' | 'contacted' | 'completed'
+type StatusFilter = 'all' | ContactStatus | EnquiryStatus
+
+// Constants
+const VIEW_OPTIONS: ViewType[] = ['all', 'contacts', 'enquiries']
+const STATUS_OPTIONS = [
+    { value: 'all', label: 'All Status' },
+    { value: 'new', label: 'New' },
+    { value: 'read', label: 'Read' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'contacted', label: 'Contacted' },
+    { value: 'completed', label: 'Completed' },
+    { value: 'archived', label: 'Archived' }
+] as const
 
 const AdminDashboard = () => {
+    // State
     const [items, setItems] = useState<DashboardItem[]>([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
     const [currentView, setCurrentView] = useState<ViewType>('all')
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedItem, setSelectedItem] = useState<DashboardItem | null>(null)
 
-    useEffect(() => {
-        fetchData()
-    }, [])
-
-    const fetchData = async () => {
+    // Data fetching
+    const fetchData = useCallback(async () => {
         setLoading(true)
+        setError(null)
+
         try {
-            const { data: contacts, error: contactsError } = await supabase
-                .from('contacts')
-                .select('*')
-                .order('created_at', { ascending: false })
+            // Updated queries with specific field selection
+            const [contactsResponse, enquiriesResponse] = await Promise.all([
+                supabase
+                    .from('contacts')
+                    .select('id, name, number, subject, message, status, created_at')
+                    .order('created_at', { ascending: false }),
+                supabase
+                    .from('quotes') // This table contains enquiries
+                    .select('id, name, phone, service, status, created_at')
+                    .order('created_at', { ascending: false })
+            ])
 
-            const { data: enquiries, error: enquiriesError } = await supabase
-                .from('quotes')
-                .select('*')
-                .order('created_at', { ascending: false })
+            if (contactsResponse.error) throw new Error(contactsResponse.error.message)
+            if (enquiriesResponse.error) throw new Error(enquiriesResponse.error.message)
 
-            if (contactsError) throw contactsError
-            if (enquiriesError) throw enquiriesError
+            // Format contacts
+            const formattedContacts = (contactsResponse.data || []).map((contact): Contact => ({
+                ...contact,
+                type: 'contact',
+                status: validateContactStatus(contact.status)
+            }))
 
-            const formattedContacts = (contacts || []).map(c => ({ ...c, type: 'contact' as const }))
-            const formattedEnquiries = (enquiries || []).map(e => ({ ...e, type: 'enquiry' as const }))
+            // Format enquiries with correct field mapping
+            const formattedEnquiries = (enquiriesResponse.data || []).map((enquiry): Enquiry => ({
+                id: enquiry.id,
+                created_at: enquiry.created_at,
+                name: enquiry.name,
+                phone: enquiry.phone,
+                service: enquiry.service,
+                type: 'enquiry',
+                status: validateEnquiryStatus(enquiry.status)
+            }))
 
-            setItems([...formattedContacts, ...formattedEnquiries].sort(
-                (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-            ))
-        } catch (error) {
-            console.error('Error fetching data:', error)
+            const sortedItems = [...formattedContacts, ...formattedEnquiries]
+                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+
+            setItems(sortedItems)
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'An error occurred'
+            setError(errorMessage)
+            console.error('Error fetching data:', err)
         } finally {
             setLoading(false)
         }
+    }, [])
+
+    // Add these helper functions above the component
+    const validateContactStatus = (status: string): ContactStatus => {
+        return ['new', 'read', 'archived'].includes(status)
+            ? (status as ContactStatus)
+            : 'new'
     }
 
-    const updateItemStatus = async (
+    const validateEnquiryStatus = (status: string): EnquiryStatus => {
+        return ['pending', 'contacted', 'completed', 'archived'].includes(status)
+            ? (status as EnquiryStatus)
+            : 'pending'
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [fetchData])
+
+    // Status updates
+    const updateItemStatus = useCallback(async (
         item: DashboardItem,
         newStatus: Contact['status'] | Enquiry['status']
     ) => {
@@ -87,22 +143,56 @@ const AdminDashboard = () => {
 
             if (error) throw error
 
-            setItems(items.map(i => {
-                if (i.id === item.id) {
-                    if (i.type === 'contact' && item.type === 'contact') {
-                        return { ...i, status: newStatus as Contact['status'] }
-                    } else if (i.type === 'enquiry' && item.type === 'enquiry') {
-                        return { ...i, status: newStatus as Enquiry['status'] }
-                    }
+            setItems(prev => prev.map(i => {
+                if (i.id !== item.id) return i
+                if (i.type === 'contact' && ['new', 'read', 'archived'].includes(newStatus)) {
+                    return { ...i, status: newStatus as ContactStatus }
+                }
+                if (i.type === 'enquiry' && ['pending', 'contacted', 'completed', 'archived'].includes(newStatus)) {
+                    return { ...i, status: newStatus as EnquiryStatus }
                 }
                 return i
             }))
+
+            if (selectedItem?.id === item.id) {
+                if (item.type === 'contact' && ['new', 'read', 'archived'].includes(newStatus)) {
+                    setSelectedItem({ ...item, status: newStatus as ContactStatus })
+                } else if (item.type === 'enquiry' && ['pending', 'contacted', 'completed', 'archived'].includes(newStatus)) {
+                    setSelectedItem({ ...item, status: newStatus as EnquiryStatus })
+                }
+            }
         } catch (error) {
             console.error('Error updating status:', error)
+            setError('Failed to update status')
         }
-    }
+    }, [selectedItem])
 
-    const getStatusIcon = (item: DashboardItem) => {
+    // Stats calculation
+    const stats = useMemo(() => ({
+        contacts: items.filter(i => i.type === 'contact').length,
+        enquiries: items.filter(i => i.type === 'enquiry').length,
+        new: items.filter(i => i.status === 'new' || i.status === 'pending').length,
+        inProgress: items.filter(i => i.status === 'read' || i.status === 'contacted').length,
+        completed: items.filter(i => i.status === 'completed').length,
+        archived: items.filter(i => i.status === 'archived').length
+    }), [items])
+
+    // Filtered items
+    const filteredItems = useMemo(() =>
+        items.filter(item => {
+            const matchesView = currentView === 'all' || item.type === currentView.slice(0, -1)
+            const matchesStatus = statusFilter === 'all' || item.status === statusFilter
+            const searchText = item.type === 'contact'
+                ? `${item.name} ${item.number} ${item.subject} ${item.message}`
+                : `${item.name} ${item.phone} ${item.service}`
+            const matchesSearch = searchText.toLowerCase().includes(searchQuery.toLowerCase())
+
+            return matchesView && matchesStatus && matchesSearch
+        }),
+        [items, currentView, statusFilter, searchQuery])
+
+    // Icon helper
+    const getStatusIcon = useCallback((item: DashboardItem) => {
         if (item.type === 'contact') {
             switch (item.status) {
                 case 'new': return <FiMail className={styles.newIcon} />
@@ -119,33 +209,12 @@ const AdminDashboard = () => {
                 default: return null
             }
         }
-    }
-
-    const filteredItems = items.filter(item => {
-        const matchesView = currentView === 'all' || item.type === currentView.slice(0, -1)
-        const matchesStatus = statusFilter === 'all' || item.status === statusFilter
-        const searchText = item.type === 'contact'
-            ? `${item.name} ${item.number} ${item.subject} ${item.message}`
-            : `${item.name} ${item.phone} ${item.service}`
-        const matchesSearch = searchText.toLowerCase().includes(searchQuery.toLowerCase())
-
-        return matchesView && matchesStatus && matchesSearch
-    })
-
-    const getStats = () => ({
-        contacts: items.filter(i => i.type === 'contact').length,
-        enquiries: items.filter(i => i.type === 'enquiry').length,
-        new: items.filter(i => i.status === 'new' || i.status === 'pending').length,
-        inProgress: items.filter(i => i.status === 'read' || i.status === 'contacted').length,
-        completed: items.filter(i => i.status === 'completed').length,
-        archived: items.filter(i => i.status === 'archived').length
-    })
-
-    const stats = getStats()
+    }, [])
 
     return (
         <div className={styles.dashboard}>
             <div className={styles.container}>
+                {/* Header with Stats */}
                 <div className={styles.header}>
                     <h1>Admin Dashboard</h1>
                     <div className={styles.stats}>
@@ -186,9 +255,10 @@ const AdminDashboard = () => {
                     </div>
                 </div>
 
+                {/* Controls */}
                 <div className={styles.controls}>
                     <div className={styles.viewToggle}>
-                        {(['all', 'contacts', 'enquiries'] as const).map((view) => (
+                        {VIEW_OPTIONS.map((view) => (
                             <button
                                 key={view}
                                 className={`${styles.viewButton} ${currentView === view ? styles.active : ''}`}
@@ -217,32 +287,39 @@ const AdminDashboard = () => {
                                 onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
                                 className={styles.filterSelect}
                             >
-                                <option value="all">All Status</option>
-                                <option value="new">New</option>
-                                <option value="read">Read</option>
-                                <option value="pending">Pending</option>
-                                <option value="contacted">Contacted</option>
-                                <option value="completed">Completed</option>
-                                <option value="archived">Archived</option>
+                                {STATUS_OPTIONS.map(option => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                     </div>
                 </div>
 
+                {/* Content */}
                 <div className={styles.content}>
-                    <div className={styles.itemsList}>
-                        {loading ? (
-                            <div className={styles.loading}>
-                                <div className={styles.spinner}></div>
-                                <span>Loading...</span>
-                            </div>
-                        ) : filteredItems.length === 0 ? (
-                            <div className={styles.empty}>
-                                <FiSearch size={40} />
-                                <p>No items found</p>
-                            </div>
-                        ) : (
-                            filteredItems.map((item) => (
+                    {loading ? (
+                        <div className={styles.loading}>
+                            <div className={styles.spinner}></div>
+                            <span>Loading...</span>
+                        </div>
+                    ) : error ? (
+                        <div className={styles.error}>
+                            <FiX className={styles.errorIcon} />
+                            <p>{error}</p>
+                            <button onClick={fetchData} className={styles.retryButton}>
+                                Retry
+                            </button>
+                        </div>
+                    ) : filteredItems.length === 0 ? (
+                        <div className={styles.empty}>
+                            <FiSearch size={40} />
+                            <p>No items found</p>
+                        </div>
+                    ) : (
+                        <div className={styles.itemsList}>
+                            {filteredItems.map((item) => (
                                 <motion.div
                                     key={`${item.type}-${item.id}`}
                                     layoutId={`${item.type}-${item.id}`}
@@ -272,6 +349,7 @@ const AdminDashboard = () => {
                                             <p className={styles.contact}>{item.phone}</p>
                                         </>
                                     )}
+
                                     <div className={styles.itemFooter}>
                                         <div className={styles.status}>
                                             {getStatusIcon(item)}
@@ -336,12 +414,13 @@ const AdminDashboard = () => {
                                         </div>
                                     </div>
                                 </motion.div>
-                            ))
-                        )}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 
+            {/* Modal */}
             <AnimatePresence>
                 {selectedItem && (
                     <motion.div
@@ -386,29 +465,33 @@ const AdminDashboard = () => {
                                         </div>
                                         <div className={styles.modalField}>
                                             <label>Contact</label>
-                                            <span>{selectedItem.type === 'contact' ? selectedItem.number : selectedItem.phone}</span>
+                                            <span>
+                                                {selectedItem.type === 'contact'
+                                                    ? selectedItem.number
+                                                    : selectedItem.phone}
+                                            </span>
                                         </div>
                                         <div className={styles.modalField}>
                                             <label>Date</label>
-                                            <span>{new Date(selectedItem.created_at).toLocaleString()}</span>
+                                            <span>
+                                                {new Date(selectedItem.created_at).toLocaleString()}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
 
                                 {selectedItem.type === 'contact' ? (
-                                    <>
-                                        <div className={styles.modalSection}>
-                                            <h3>Message Details</h3>
-                                            <div className={styles.modalField}>
-                                                <label>Subject</label>
-                                                <span>{selectedItem.subject}</span>
-                                            </div>
-                                            <div className={styles.modalField}>
-                                                <label>Message</label>
-                                                <p className={styles.message}>{selectedItem.message}</p>
-                                            </div>
+                                    <div className={styles.modalSection}>
+                                        <h3>Message Details</h3>
+                                        <div className={styles.modalField}>
+                                            <label>Subject</label>
+                                            <span>{selectedItem.subject}</span>
                                         </div>
-                                    </>
+                                        <div className={styles.modalField}>
+                                            <label>Message</label>
+                                            <p className={styles.message}>{selectedItem.message}</p>
+                                        </div>
+                                    </div>
                                 ) : (
                                     <div className={styles.modalSection}>
                                         <h3>Service Details</h3>

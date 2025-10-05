@@ -123,7 +123,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, isReversed, index })
 
 const Services: React.FC = () => {
     const filteredServices = services.filter(service =>
-        ![3, 4, 5].includes(service.id)
+        ![3, 4, 5, 7].includes(service.id)
     );
     return (
         <section className={styles.services} id="services">
