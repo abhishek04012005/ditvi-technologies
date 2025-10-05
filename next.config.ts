@@ -1,7 +1,10 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+    // ...existing config
+    generateStaticParams: true,
+    siteMap: {
+        hostname: 'https://abhishek04012005.github.io/ditvi-technologies',
+    },
+}
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
-
-export default nextConfig;
+module.exports = nextConfig
