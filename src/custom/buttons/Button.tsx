@@ -9,6 +9,7 @@ interface ButtonProps {
     variant?: 'primary' | 'secondary'
     className?: string
     onClick?: () => void
+    target?: '_blank' | '_self' | '_parent' | '_top' // Add target prop
 }
 
 const Button = ({
@@ -16,13 +17,19 @@ const Button = ({
     href,
     variant = 'primary',
     className = '',
-    onClick
+    onClick,
+    target
 }: ButtonProps) => {
     const classes = `${styles.button} ${styles[variant]} ${className}`
 
     if (href) {
         return (
-            <Link href={href} className={classes}>
+            <Link 
+                href={href} 
+                className={classes}
+                target={target}
+                rel={target === '_blank' ? 'noopener noreferrer' : undefined}
+            >
                 {children}
             </Link>
         )

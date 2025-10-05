@@ -9,8 +9,8 @@ import styles from './Signature.module.css'
 import Heading from '@/custom/heading/Heading'
 import Button from '@/custom/buttons/Button'
 import GetQuotePopup from '@/custom/getquotepopup/GetQuotePopup'
-import BiodataImage from '../../../assets/services/signature.jpg'
-import ResumeImage from '../../../assets/services/signature.jpg'
+import BiodataImage from '../../../assets/biodata/biodata.png'
+import ResumeImage from '../../../assets/resume/resume.png'
 
 interface SignatureService {
     id: number
@@ -28,6 +28,7 @@ interface SignatureService {
     }
     price: string
     path: string
+    redirectPath: string
 }
 
 const signatureServices: SignatureService[] = [
@@ -40,27 +41,27 @@ const signatureServices: SignatureService[] = [
         features: [
             {
                 icon: "🎨",
-                title: "Custom Design",
+                title: "Professional Design",
             },
             {
                 icon: "📱",
                 title: "Mobile Friendly",
             },
             {
-                icon: "🔄",
-                title: "Quick Updates",
+                icon: "⚡",
+                title: "Quick Delivery",
             },
             {
                 icon: "📊",
                 title: "Multiple Formats",
             },
             {
-                icon: "🎯",
-                title: "ATS Optimized",
+                icon: "🏛️",
+                title: "Cultural Touch",
             },
             {
-                icon: "🔒",
-                title: "Privacy Protected",
+                icon: "✨",
+                title: "100% Satisfaction",
             },
         ],
         stats: {
@@ -68,7 +69,8 @@ const signatureServices: SignatureService[] = [
             satisfaction: 98
         },
         price: "Starts from ₹101",
-        path: "/services/ditvi-biodata"
+        path: "servoices/ditvi-biodata",
+        redirectPath: "https://biodata.ditvi.org"
     },
     {
         id: 2,
@@ -107,7 +109,8 @@ const signatureServices: SignatureService[] = [
             satisfaction: 99
         },
         price: "Starts from ₹101",
-        path: "/services/ditvi-resume"
+        path: "/services/ditvi-resume",
+        redirectPath: "https://resume.ditvi.org"
     }
 ]
 
@@ -131,7 +134,7 @@ const SignatureCard: React.FC<SignatureCardProps> = ({ service, isReversed, inde
         }
     }, [controls, inView])
 
-   
+
 
     return (
         <>
@@ -189,14 +192,14 @@ const SignatureCard: React.FC<SignatureCardProps> = ({ service, isReversed, inde
                     </div>
 
                     <div className={styles.statsContainer}>
-                
+
                         <div className={styles.pricing}>
                             <span className={styles.priceValue}>{service.price}</span>
                         </div>
                     </div>
 
                     <div className={styles.cta}>
-                        <Button href={service.path} className={styles.buttonItem} variant='primary'>
+                        <Button target="_blank" href={service.redirectPath} className={styles.buttonItem} variant='primary'>
                             Learn More <FiArrowRight />
                         </Button>
                         <Button
