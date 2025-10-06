@@ -17,7 +17,7 @@ const navItems: LinkItem[] = [
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
   { name: 'Services', path: '/services' },
-  { name: 'Projects', path: '/projects' },
+  { name: 'Clients', path: '/client' },
   { name: 'Contact', path: '/contact' },
 ];
 
