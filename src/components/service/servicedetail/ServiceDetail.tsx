@@ -22,16 +22,10 @@ const ServiceDetail: FC<ServiceDetailProps> = ({ params }) => {
   const [showQuotePopup, setShowQuotePopup] = useState(false)
   const [selectedPackage, setSelectedPackage] = useState('')
 
-    const service = useMemo<ServiceItem | undefined>(
-    () => {
-      const excludedIds = [2, 6] 
-      const service = services.find((s) => 
-        s.path === slugPath && !excludedIds.includes(s.id)
-      )
-      return service
-    },
+   const service = useMemo<ServiceItem | undefined>(
+    () => services.find((s) => s.path === slugPath),
     [slugPath]
-  )
+)
   //e
   if (!service) {
     return (
