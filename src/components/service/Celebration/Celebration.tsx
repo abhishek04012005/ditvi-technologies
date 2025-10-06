@@ -260,6 +260,8 @@ const CelebrationCard: React.FC<CelebrationCardProps> = ({ service, isReversed, 
     )
 }
 
+//hjb
+
 const Celebration: React.FC = () => {
     return (
         <section className={styles.celebrations} id="celebrations">
