@@ -7,6 +7,10 @@ import clsx from 'clsx';
 import styles from './Navbar.module.css';
 import Image from 'next/image';
 import Logo from "../../assets/logo.png";
+import { FaWhatsapp } from 'react-icons/fa';
+import { contactDetails } from '@/json/ditviinfo'
+
+
 
 interface LinkItem {
   name: string;
@@ -24,6 +28,9 @@ const navItems: LinkItem[] = [
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
+    const whatsappMessage = encodeURIComponent(
+    "Hi Ditvi Technologies, I'm interested in your services. Can you help me?"
+  );
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -57,33 +64,47 @@ const Navbar: React.FC = () => {
     ));
 
   return (
-    <nav className={styles.navbar} ref={navRef}>
-      <div className={styles.container}>
-        <div className={styles.navContent}>
-          <Link href="/" className={styles.logo}>
-            <Image src={Logo} alt="Ditvi Technologies" className={styles.logoImage}  />
-          </Link>
+    <>
+      <nav className={styles.navbar} ref={navRef}>
+        <div className={styles.container}>
+          <div className={styles.navContent}>
+            <Link href="/" className={styles.logo}>
+              <Image src={Logo} alt="Ditvi Technologies" className={styles.logoImage} />
+            </Link>
 
- 
-          <div className={styles.desktopMenu}>{renderMenuItems(false)}</div>
 
- 
-          <button
-            className={clsx(styles.mobileMenuToggle, { [styles.active]: isOpen })}
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-            aria-expanded={isOpen}
-          >
-            {isOpen ? <IoMdClose size={24} /> : <IoMdMenu size={24} />}
-          </button>
+            <div className={styles.desktopMenu}>{renderMenuItems(false)}</div>
+
+
+            <button
+              className={clsx(styles.mobileMenuToggle, { [styles.active]: isOpen })}
+              onClick={toggleMenu}
+              aria-label="Toggle menu"
+              aria-expanded={isOpen}
+            >
+              {isOpen ? <IoMdClose size={24} /> : <IoMdMenu size={24} />}
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          <div className={clsx(styles.mobileMenu, { [styles.show]: isOpen })}>
+            {renderMenuItems(true)}
+          </div>
         </div>
-
-        {/* Mobile Menu */}
-        <div className={clsx(styles.mobileMenu, { [styles.show]: isOpen })}>
-          {renderMenuItems(true)}
-        </div>
-      </div>
-    </nav>
+      </nav>
+      <a
+        href={`https://wa.me/${contactDetails.number.replace('+', '')}?text=${whatsappMessage}`}
+        className={styles.whatsappButton}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Contact us on WhatsApp"
+      >
+        <FaWhatsapp size={24} />
+        <span className={styles.whatsappTooltip}>
+          Chat with us on WhatsApp
+        </span>
+      </a>
+    </>
   );
 };
 

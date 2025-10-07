@@ -1,5 +1,13 @@
 {
-  "name": "website",
+  "name": "ditvi-technologies",
+  "description": "Professional digital solutions and services by Ditvi Technologies",
+  "keywords": [
+    "digital solutions",
+    "biodata services",
+    "digital resume",
+    "digital celebrations"
+  ],
+  "author": "Ditvi Technologies",
   "version": "0.1.0",
   "private": true,
   "scripts": {
