@@ -1,7 +1,6 @@
 import { MetadataRoute } from 'next'
 import { services } from '@/json/services'
 
-// Add these export configurations for static generation
 export const dynamic = 'force-static'
 export const dynamicParams = false
 export const revalidate = false
