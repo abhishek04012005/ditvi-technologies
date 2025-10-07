@@ -7,7 +7,7 @@ export const dynamicParams = false
 export const revalidate = false
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://abhishek04012005.github.io/ditvi-technologies'
+    const baseUrl = 'https://technologies.ditvi.org'
 
     // Core pages
     const routes = [

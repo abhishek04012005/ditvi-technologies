@@ -11,6 +11,6 @@ export default function robots(): MetadataRoute.Robots {
             userAgent: '*',
             allow: '/',
         },
-        sitemap: 'https://abhishek04012005.github.io/ditvi-technologies/sitemap.xml',
+        sitemap: 'https://technologies.ditvi.org/sitemap.xml',
     }
 }
