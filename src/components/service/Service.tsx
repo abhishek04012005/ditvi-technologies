@@ -121,6 +121,8 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, isReversed, index })
     )
 }
 
+//j
+
 const Services: React.FC = () => {
     const filteredServices = services.filter(service =>
         ![8, 4, 5, 7, 6].includes(service.id)
