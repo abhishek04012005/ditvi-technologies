@@ -10,22 +10,28 @@ import Button from '@/custom/buttons/Button'
 import styles from './ServiceDetail.module.css'
 import GetQuotePopup from '@/custom/getquotepopup/GetQuotePopup'
 import { Pricing } from '@/components/pricing/Pricing'
+import { CityData } from '@/json/seo'
+
 
 interface ServiceDetailProps {
   params: {
-    slug: string
-  }
+    slug: string;
+    city?: string;
+  };
+   service: ServiceItem;
+  cityData?: CityData;
 }
 
-const ServiceDetail: FC<ServiceDetailProps> = ({ params }) => {
+const ServiceDetail: FC<ServiceDetailProps> = ({ params, service, cityData }) => {
   const slugPath = `/services/${params.slug}`
   const [showQuotePopup, setShowQuotePopup] = useState(false)
   const [selectedPackage, setSelectedPackage] = useState('')
 
-   const service = useMemo<ServiceItem | undefined>(
-    () => services.find((s) => s.path === slugPath),
-    [slugPath]
-)
+  // const service = useMemo<ServiceItem | undefined>(
+  //   () => services.find((s) => s.path === slugPath),
+  //   [slugPath]
+  // )
+
   //e
   if (!service) {
     return (
@@ -42,10 +48,30 @@ const ServiceDetail: FC<ServiceDetailProps> = ({ params }) => {
     )
   }
 
+  const pageTitle = cityData
+    ? `${service.title} in ${cityData.name}`
+    : service.title;
+
+  const pageDescription = cityData
+    ? `${service.description} in ${cityData.name}, ${cityData.state}`
+    : service.description;
+
   const statsItems = [
-    { icon: <FiUsers />, value: service.stats.clients, label: 'Happy Clients' },
-    { icon: <FiBox />, value: service.stats.projects, label: 'Projects Delivered' },
-    { icon: <FiSmile />, value: service.stats.satisfaction, label: '% Client Satisfaction' }
+    {
+      icon: <FiUsers />,
+      value: service.stats.clients,
+      label: cityData ? `Happy Clients in ${cityData.name}` : 'Happy Clients'
+    },
+    {
+      icon: <FiBox />,
+      value: service.stats.projects,
+      label: cityData ? `Projects Delivered in ${cityData.name}` : 'Projects Delivered'
+    },
+    {
+      icon: <FiSmile />,
+      value: service.stats.satisfaction,
+      label: cityData ? `100% Client Satisfaction in ${cityData.name}` : '100% Client Satisfaction'
+    }
   ]
 
   return (
@@ -71,9 +97,9 @@ const ServiceDetail: FC<ServiceDetailProps> = ({ params }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <h1 className={styles.title}>{service.title}</h1>
+              <h1 className={styles.title}>{pageTitle}</h1>
               <h2 className={styles.subtitle}>{service.subtitle}</h2>
-              <p className={styles.description}>{service.description}</p>
+              <p className={styles.description}>{pageDescription}</p>
             </motion.div>
 
             {/* Stats Section with Hero Image */}
