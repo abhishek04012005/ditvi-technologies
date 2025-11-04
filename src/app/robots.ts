@@ -14,3 +14,5 @@ export default function robots(): MetadataRoute.Robots {
         sitemap: 'https://technologies.ditvi.org/sitemap.xml',
     }
 }
+
+//nkj
