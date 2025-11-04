@@ -43,6 +43,9 @@ export const metadata: Metadata = {
     locale: 'en_US',
     type: 'website',
   },
+   verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
+  },
   twitter: {
     card: 'summary_large_image',
     title: "Ditvi Technologies | Digital Solutions",
@@ -59,11 +62,6 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
-  },
-  verification: {
-    google: 'your-google-verification-code', // Add your Google verification code
-    yandex: 'your-yandex-verification-code', // Optional
-    yahoo: 'your-yahoo-verification-code',    // Optional
   },
   icons: {
     icon: '/favicon.ico',
