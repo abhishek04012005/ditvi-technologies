@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
+import Head from "next/head";
 
 
 
@@ -87,6 +88,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+     <Head>
+        <meta
+          name="google-site-verification"
+          content={process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION}
+        />
+      </Head>
       <body >
         <Navbar />
         {children}
